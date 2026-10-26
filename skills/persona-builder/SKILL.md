@@ -70,6 +70,11 @@ the notes path. Each researcher reads `references/researcher.md` (bundled here, 
 this works whether or not the deep-research skill is installed). Add a scoped lane
 for any major sub-field from Step 1 that the standard lanes would skim.
 
+Web search has a shared limit per session. Six to seven lanes for one persona fits;
+building two personas at once (12+ researchers) ran out of searches late in testing,
+so build personas one at a time. If a researcher reports the limit, its unfinished
+items go under Gaps as UNVERIFIED, and the writer keeps them marked.
+
 Allow one follow-up round only if a lane came back empty or a core topic is missing.
 More rounds risk timeouts and add little.
 
