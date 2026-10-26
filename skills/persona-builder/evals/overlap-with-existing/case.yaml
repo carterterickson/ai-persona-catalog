@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: overlap-with-existing
+expected_outcome: |
+  Claude notices overlap with senior-software-developer and senior-database-engineer, states how the scopes split, and sets skip_when, pairs_with and hand-offs accordingly.
