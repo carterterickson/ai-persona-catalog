@@ -1,4 +1,4 @@
 schema_version: "1.1"
 name: unattended-build
 expected_outcome: |
-  Claude asks any scoping questions first, then creates a one-time scheduled task with a standalone build prompt that commits to a persona/<id> branch, reports the approval setting, and does not start the build in the current session.
+  Claude asks any scoping questions first, then creates a one-time scheduled task with a standalone build prompt that attaches the repo with push access first and commits straight to main, reports the approval setting, and does not start the build in the current session.

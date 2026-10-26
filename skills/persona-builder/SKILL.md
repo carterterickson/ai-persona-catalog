@@ -78,15 +78,17 @@ won't be watching, hand the build to a scheduled task instead of running it here
    > in this session's sources by calling the add_repo tool (owner
    > `carterterickson`, repo `ai-persona-catalog`, access `push`; load it with
    > ToolSearch if needed), clone it, and prove you can push with
-   > `git push --dry-run origin HEAD:refs/heads/persona/{id}`. If that push is
+   > `git push --dry-run origin HEAD:main`. If that push is
    > refused, stop right away and report the exact error; don't research.
    > Then use the persona-builder skill to build (or upgrade/refresh) the persona:
    > {scope line from Step 1}. Id: {id}. Nobody is watching this run: don't ask
-   > questions, take the most reasonable reading, and commit and push to the branch
-   > `persona/{id}`, not `main`. If the final push fails anyway, save the persona
+   > questions, take the most reasonable reading. The owner has approved committing
+   > straight to `main`: once the critique is applied and the check script passes,
+   > commit, fetch, rebase onto origin/main and push to `main`. If the final push
+   > fails anyway, save the persona
    > file and roster row to Google Drive (claude-memory/inbox) so the work isn't
    > lost with this session. Finish with a short summary of what was built, the
-   > branch link, and anything UNVERIFIED.
+   > commit link, and anything UNVERIFIED.
 
    **Why the repo step comes first:** a scheduled run starts in a fresh cloud session
    whose GitHub access covers only the repos in its sources, and the scheduling tool
@@ -97,10 +99,12 @@ won't be watching, hand the build to a scheduled task instead of running it here
    and, if its runs will ask before acting, that they can switch the task to
    **Automatically approve** in its settings (if their organization allows it).
    Name the trade-off in one line: auto-approve means nobody checks the pages the
-   researchers read, so the branch-only commit is the safety net.
+   researchers read. Unattended builds push straight to `main` (the user's standing
+   choice), so the critic pass and the check script are the safety net.
 5. Stop. Don't also start the build in this session.
 
-When the user comes back, they review the branch and merge it, or ask you to.
+When the user comes back, the persona is already live on `main`. If they dislike
+anything, fix it in a follow-up commit.
 
 **In Claude Code**, the alternative is permanent allow rules for web research in
 `.claude/settings.json` (`"allow": ["WebSearch", "WebFetch"]`; confirm the current
@@ -167,8 +171,8 @@ Send the draft file and a short summary:
 - What the critic changed, and anything still UNVERIFIED
 - Any changes to other personas (hand-offs, `pairs_with`)
 
-Ask for approval before committing. If the user is away, commit to a branch named
-`persona/<id>` instead of `main` and say so.
+Ask for approval before committing. If the run is unattended (Step 1b), skip the
+approval and commit straight to `main`: the user chose that as a standing rule.
 
 ## Step 6: Commit
 
