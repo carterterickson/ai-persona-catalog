@@ -61,50 +61,46 @@ stays generic: no project names, people, keys or private details.
 
 ## Step 1b: Unattended runs
 
-A build makes dozens of web requests over about 25 minutes. In an interactive session
-each one may need the user's approval, which nobody can sit through. So when the user
-says "unattended", "run it while I'm away", "I'm leaving", or otherwise signals they
-won't be watching, hand the build to a scheduled task instead of running it here:
+A build makes dozens of web requests over about 25 minutes. When the user says
+"unattended", "run it while I'm away", "I'm leaving", or otherwise signals they won't
+be watching, finish Step 1 first while they're still here (ask any scoping questions
+now, because nobody will answer them later). Then pick where the build runs:
 
-1. Finish Step 1 first, while the user is still here: ask any scoping questions now,
-   because nobody will answer them later.
-2. Create a **one-time scheduled task** with the session's scheduling tool (search for
-   it with ToolSearch if it isn't loaded), set to run about 2 minutes from now, with
-   push notifications on. Leave the approval setting unset so the server picks it.
-   Never use in-session cron tools; they die when this session ends.
-3. Write the task's prompt as a complete standalone instruction, because the run
-   starts a fresh session with no memory of this one:
-   > FIRST, before any research: put the GitHub repo carterterickson/ai-persona-catalog
-   > in this session's sources by calling the add_repo tool (owner
-   > `carterterickson`, repo `ai-persona-catalog`, access `push`; load it with
-   > ToolSearch if needed), clone it, and prove you can push with
-   > `git push --dry-run origin HEAD:main`. If that push is
-   > refused, stop right away and report the exact error; don't research.
-   > Then use the persona-builder skill to build (or upgrade/refresh) the persona:
-   > {scope line from Step 1}. Id: {id}. Nobody is watching this run: don't ask
-   > questions, take the most reasonable reading. The owner has approved committing
-   > straight to `main`: once the critique is applied and the check script passes,
-   > commit, fetch, rebase onto origin/main and push to `main`. If the final push
-   > fails anyway, save the persona
-   > file and roster row to Google Drive (claude-memory/inbox) so the work isn't
-   > lost with this session. Finish with a short summary of what was built, the
-   > commit link, and anything UNVERIFIED.
+**Default: run it in this session.** Attach the repo with push access (the
+`add_repo` tool, owner `carterterickson`, repo `ai-persona-catalog`, access `push`;
+load it with ToolSearch if needed) and prove it with
+`git push --dry-run origin HEAD:main`. If that works, run Steps 2–6 here with the
+research agents in the background. The user doesn't need to watch: skip Step 5's
+approval and commit straight to `main` (the user's standing choice), with the critic
+pass and the check script as the safety net. Tell the user in one line that it's
+running here and roughly when it will finish.
 
-   **Why the repo step comes first:** a scheduled run starts in a fresh cloud session
-   whose GitHub access covers only the repos in its sources, and the scheduling tool
-   can't set sources. Without `add_repo`, every push is refused ("not in this
-   session's authorized repository set") and the finished persona dies with the
-   session's container. A 2026-10-25 run lost a full build this way.
-4. Tell the user in 2–3 lines: when it runs, which approval setting the task got,
-   and, if its runs will ask before acting, that they can switch the task to
-   **Automatically approve** in its settings (if their organization allows it).
-   Name the trade-off in one line: auto-approve means nobody checks the pages the
-   researchers read. Unattended builds push straight to `main` (the user's standing
-   choice), so the critic pass and the check script are the safety net.
-5. Stop. Don't also start the build in this session.
-
-When the user comes back, the persona is already live on `main`. If they dislike
-anything, fix it in a follow-up commit.
+**Fallback: a scheduled task**, only when this session can't push or the user asks
+for one. Scheduled runs start in a fresh cloud session that has no `add_repo` tool,
+and the scheduling tool can't attach repos, so the run can't reach GitHub unless the
+user adds the repo to the task's sources in its settings (UNVERIFIED that the
+settings page offers this). A 2026-10-25 run lost a full build this way, and a
+second run stopped at the clone with a 403 ("not in this session's authorized
+repository set").
+1. Create a **one-time scheduled task** with the session's scheduling tool (search
+   for it with ToolSearch if it isn't loaded), about 5 minutes out, push
+   notifications on, approval setting left unset. Never use in-session cron tools;
+   they die when this session ends.
+2. Write the prompt as a complete standalone instruction:
+   > FIRST, before any research: clone carterterickson/ai-persona-catalog and prove
+   > you can push with `git push --dry-run origin HEAD:main`. If that fails, still
+   > build the persona, but save the persona file and its roster row to Google Drive
+   > (claude-memory/inbox) instead of GitHub, and say so. Then use the
+   > persona-builder skill to build (or upgrade/refresh) the persona: {scope line
+   > from Step 1}. Id: {id}. Nobody is watching this run: don't ask questions, take
+   > the most reasonable reading. The owner has approved committing straight to
+   > `main`: once the critique is applied and the check script passes, commit,
+   > fetch, rebase onto origin/main and push. Finish with a short summary of what was
+   > built, the commit or Drive link, and anything UNVERIFIED.
+3. Tell the user in 2–3 lines: when it runs, which approval setting it got, and that
+   they need to add the repo to the task's sources before it fires, or the persona
+   will land in Drive for a later session to commit.
+4. Stop. Don't also start the build in this session.
 
 **In Claude Code**, the alternative is permanent allow rules for web research in
 `.claude/settings.json` (`"allow": ["WebSearch", "WebFetch"]`; confirm the current
