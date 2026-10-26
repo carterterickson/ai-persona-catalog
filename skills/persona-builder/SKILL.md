@@ -74,12 +74,25 @@ won't be watching, hand the build to a scheduled task instead of running it here
    Never use in-session cron tools; they die when this session ends.
 3. Write the task's prompt as a complete standalone instruction, because the run
    starts a fresh session with no memory of this one:
-   > Use the persona-builder skill to build (or upgrade/refresh) the persona: {scope
-   > line from Step 1}. Id: {id}. Repo: carterterickson/ai-persona-catalog (attach it
-   > with push access if it isn't attached). Nobody is watching this run: don't ask
-   > questions, take the most reasonable reading, and commit to the branch
-   > `persona/{id}`, not `main`. Finish with a short summary of what was built, the
+   > FIRST, before any research: put the GitHub repo carterterickson/ai-persona-catalog
+   > in this session's sources by calling the add_repo tool (owner
+   > `carterterickson`, repo `ai-persona-catalog`, access `push`; load it with
+   > ToolSearch if needed), clone it, and prove you can push with
+   > `git push --dry-run origin HEAD:refs/heads/persona/{id}`. If that push is
+   > refused, stop right away and report the exact error; don't research.
+   > Then use the persona-builder skill to build (or upgrade/refresh) the persona:
+   > {scope line from Step 1}. Id: {id}. Nobody is watching this run: don't ask
+   > questions, take the most reasonable reading, and commit and push to the branch
+   > `persona/{id}`, not `main`. If the final push fails anyway, save the persona
+   > file and roster row to Google Drive (claude-memory/inbox) so the work isn't
+   > lost with this session. Finish with a short summary of what was built, the
    > branch link, and anything UNVERIFIED.
+
+   **Why the repo step comes first:** a scheduled run starts in a fresh cloud session
+   whose GitHub access covers only the repos in its sources, and the scheduling tool
+   can't set sources. Without `add_repo`, every push is refused ("not in this
+   session's authorized repository set") and the finished persona dies with the
+   session's container. A 2026-10-25 run lost a full build this way.
 4. Tell the user in 2–3 lines: when it runs, which approval setting the task got,
    and, if its runs will ask before acting, that they can switch the task to
    **Automatically approve** in its settings (if their organization allows it).
