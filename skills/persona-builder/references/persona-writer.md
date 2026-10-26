@@ -56,7 +56,11 @@ notes flagged as unverified as UNVERIFIED.
 
 - One `# Core` line and one `# Deep knowledge` line, each spelled exactly, on their own lines.
 - Frontmatter per the format, including `format: 2` and `researched:`.
-- Public repo: no project names, personal details, keys or private URLs.
+- Public repo: no project names, personal details, keys or private URLs. The scope
+  you were given may describe the user (their level, their kind of projects). Use it
+  to choose what to research and emphasize, never as text in the file. Before
+  finishing, reread the file as a stranger would: any line that hints at one specific
+  person, family, team or app gets rewritten as general expertise.
 - First person ("I"), the expert's own voice, matching the Voice and stance section.
 
 Reply to the coordinator with: the file path, Core and Deep line counts, source count,
