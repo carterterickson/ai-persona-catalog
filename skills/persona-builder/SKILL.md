@@ -1,6 +1,6 @@
 ---
 name: persona-builder
-description: Builds a deeply researched, expert persona (decades of experience in a domain, process or role) for the persona-hub library, runs multi-agent deep research on the field, writes the persona in the catalog's Core + Deep knowledge format, has a skeptical expert critique it, and commits it to the ai-persona-catalog GitHub repo with its roster row. Use this whenever the user wants to create, build, add, research, upgrade or refresh an expert persona, says things like "make me a persona for X", "I need an expert in Y for the hub", "add a UX designer to my experts", "rebuild the database engineer with research", or "my hub doesn't have anyone who knows Z", even if they don't say "persona-builder" or "skill".
+description: Builds a deeply researched, expert persona (decades of experience in a domain, process or role) for the persona-hub library, runs multi-agent deep research on the field, writes the persona in the catalog's Core + Deep knowledge format, has a skeptical expert critique it, and commits it to the ai-persona-catalog GitHub repo with its roster row. Use this whenever the user wants to create, build, add, research, upgrade or refresh an expert persona, says things like "make me a persona for X", "I need an expert in Y for the hub", "add a UX designer to my experts", "rebuild the database engineer with research", or "my hub doesn't have anyone who knows Z", or wants a build to run unattended while they're away, even if they don't say "persona-builder" or "skill".
 ---
 
 # Persona Builder
@@ -58,6 +58,41 @@ Then check the roster for overlap:
 
 The repo is public. User context can shape *what to research*, but the persona file
 stays generic: no project names, people, keys or private details.
+
+## Step 1b: Unattended runs
+
+A build makes dozens of web requests over about 25 minutes. In an interactive session
+each one may need the user's approval, which nobody can sit through. So when the user
+says "unattended", "run it while I'm away", "I'm leaving", or otherwise signals they
+won't be watching, hand the build to a scheduled task instead of running it here:
+
+1. Finish Step 1 first, while the user is still here: ask any scoping questions now,
+   because nobody will answer them later.
+2. Create a **one-time scheduled task** with the session's scheduling tool (search for
+   it with ToolSearch if it isn't loaded), set to run about 2 minutes from now, with
+   push notifications on. Leave the approval setting unset so the server picks it.
+   Never use in-session cron tools; they die when this session ends.
+3. Write the task's prompt as a complete standalone instruction, because the run
+   starts a fresh session with no memory of this one:
+   > Use the persona-builder skill to build (or upgrade/refresh) the persona: {scope
+   > line from Step 1}. Id: {id}. Repo: carterterickson/ai-persona-catalog (attach it
+   > with push access if it isn't attached). Nobody is watching this run: don't ask
+   > questions, take the most reasonable reading, and commit to the branch
+   > `persona/{id}`, not `main`. Finish with a short summary of what was built, the
+   > branch link, and anything UNVERIFIED.
+4. Tell the user in 2–3 lines: when it runs, which approval setting the task got,
+   and, if its runs will ask before acting, that they can switch the task to
+   **Automatically approve** in its settings (if their organization allows it).
+   Name the trade-off in one line: auto-approve means nobody checks the pages the
+   researchers read, so the branch-only commit is the safety net.
+5. Stop. Don't also start the build in this session.
+
+When the user comes back, they review the branch and merge it, or ask you to.
+
+**In Claude Code**, the alternative is permanent allow rules for web research in
+`.claude/settings.json` (`"allow": ["WebSearch", "WebFetch"]`; confirm the current
+syntax with `/permissions`), after which the build can run in the foreground
+without prompts.
 
 ## Step 2: Research the field
 
