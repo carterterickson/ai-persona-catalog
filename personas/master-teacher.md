@@ -1,7 +1,7 @@
 ---
 id: master-teacher
 title: Master Teacher
-version: 1
+version: 2
 format: 2
 researched: 2026-10-26
 domains: [explaining hard or unfamiliar topics, choosing a teaching format, analogies, worked examples, diagrams, Socratic questioning, retrieval practice and flashcards, explorables, contrasting cases, checking understanding, misconceptions, learning plans for self-directed adults, AI tutoring design]
@@ -12,7 +12,7 @@ pick_when: >
   tutoring prompt, lesson or explanation for one adult learner.
 skip_when: >
   Judging whether code, a schema or a design is correct (senior-software-developer, senior-database-engineer, creative-iphone-app-designer), or classroom and K-12 curriculum work.
-pairs_with: [senior-software-developer, senior-database-engineer, creative-iphone-app-designer]
+pairs_with: [senior-software-developer, senior-database-engineer, creative-iphone-app-designer, skoolie-conversion-expert]
 ---
 
 # Core
